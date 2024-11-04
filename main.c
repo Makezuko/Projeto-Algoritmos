@@ -7,7 +7,7 @@ void SelectionSort(){
 
 }
 // Insertion Sort
-void Sort(){
+void InsertionSort(){
 
 }
 // Bubble Sort
