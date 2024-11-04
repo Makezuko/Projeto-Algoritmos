@@ -4,6 +4,39 @@
 
 #define TAMANHO_LISTA 10000 // Aumentando o tamanho da lista
 
+// Declarações das funções
+void SelectionSort(int *lista, int tamanho);
+void InsertionSort(int *lista, int tamanho);
+void bubbleSort(int *lista, int tamanho);
+void MergeSort(int *lista, int esquerda, int direita);
+void QuickSort(int *lista, int baixo, int alto); 
+void HeapSort(int *lista, int tamanho);
+void gerarLista(int *lista, int tamanho);
+void copiaLista(int *origem, int *destino, int tamanho);
+void imprimirLista(int *lista, int tamanho);
+
+// Função para copiar uma lista
+void copiaLista(int *origem, int *destino, int tamanho) {
+    for (int i = 0; i < tamanho; i++) {
+        destino[i] = origem[i];
+    }
+}
+
+// Função para gerar uma lista de números aleatórios diferentes
+void gerarLista(int *lista, int tamanho) {
+    for (int i = 0; i < tamanho; i++) {
+        lista[i] = i; // Preenche com números sequenciais
+    }
+
+    // Embaralha a lista usando o algoritmo de Fisher-Yates
+    for (int i = tamanho - 1; i > 0; i--) {
+        int j = rand() % (i + 1);
+        // Troca lista[i] com a lista[j]
+        int temp = lista[i];
+        lista[i] = lista[j];
+        lista[j] = temp;
+    }
+}
 
 // Função de Selection Sort
 void SelectionSort(int *lista, int tamanho) {
@@ -54,6 +87,11 @@ void Merge(int *lista, int esquerda, int meio, int direita) {
     int *L = (int*)malloc(n1 * sizeof(int));
     int *R = (int*)malloc(n2 * sizeof(int));
 
+    if (L == NULL || R == NULL) {
+        fprintf(stderr, "Erro ao alocar memória.\n");
+        exit(EXIT_FAILURE);
+    }
+
     for (int i = 0; i < n1; i++)
         L[i] = lista[esquerda + i];
     for (int j = 0; j < n2; j++)
@@ -95,15 +133,6 @@ void MergeSort(int *lista, int esquerda, int direita) {
     }
 }
 
-// Função de Quick Sort
-void QuickSort(int *lista, int baixo, int alto) {
-    if (baixo < alto) {
-        int p = particao(lista, baixo, alto);
-        QuickSort(lista, baixo, p - 1);
-        QuickSort(lista, p + 1, alto);
-    }
-}
-
 // Função de partição para o Quick Sort
 int particao(int *lista, int baixo, int alto) {
     int pivo = lista[alto];
@@ -120,6 +149,17 @@ int particao(int *lista, int baixo, int alto) {
     lista[i + 1] = lista[alto];
     lista[alto] = temp;
     return (i + 1);
+}
+
+int particao(int *lista, int baixo, int alto);
+
+// Função de Quick Sort
+void QuickSort(int *lista, int baixo, int alto) {
+    if (baixo < alto) {
+        int p = particao(lista, baixo, alto);
+        QuickSort(lista, baixo, p - 1);
+        QuickSort(lista, p + 1, alto);
+    }
 }
 
 // Função de Heap Sort
@@ -165,33 +205,16 @@ void imprimirLista(int *lista, int tamanho) {
 
 int main() {
     int lista[TAMANHO_LISTA];
-    int i, j, num;
-    int repetido;
+    int copia[TAMANHO_LISTA];
+    int escolha;
 
     srand((unsigned)time(NULL));
 
-    // Gera números aleatórios diferentes
-    for (i = 0; i < TAMANHO_LISTA; i++) {
-        do {
-            repetido = 0;
-            num = rand() % 10001; // Gera um número entre 0 e 10000
+    // Gera uma lista de números aleatórios diferentes
+    gerarLista(lista, TAMANHO_LISTA);
 
-            // Verifica se o número já está na lista
-            for (j = 0; j < i; j++) {
-                if (lista[j] == num) {
-                    repetido = 1;
-                    break;
-                }
-            }
-        } while (repetido);
-
-        lista[i] = num;
-    }
-
-    printf("Lista de %d números diferentes entre 0 e 10000 gerados aleatoriamente:\n", TAMANHO_LISTA);
+    printf("Alguns dos números gerados entre 0 e %d gerados aleatoriamente:\n", TAMANHO_LISTA);
     imprimirLista(lista, 10); // Imprime os primeiros 10 números da lista original
-
-    int escolha;
 
     do {
         // Exibe o menu de opções
@@ -213,11 +236,8 @@ int main() {
         switch (escolha) {
             case 1:
                 inicio = clock();
-                for (int k = 0; k < 5; k++) { 
-                    int copia[TAMANHO_LISTA];
-                    for (int l = 0; l < TAMANHO_LISTA; l++) {
-                        copia[l] = lista[l];
-                    }
+                for (int k = 0; k < 5; k++) {
+                    copiaLista(lista, copia, TAMANHO_LISTA);
                     SelectionSort(copia, TAMANHO_LISTA);
                 }
                 fim = clock();
@@ -225,54 +245,39 @@ int main() {
             case 2:
                 inicio = clock();
                 for (int k = 0; k < 5; k++) {
-                    int copia[TAMANHO_LISTA];
-                    for (int l = 0; l < TAMANHO_LISTA; l++) {
-                        copia[l] = lista[l];
-                    }
+                    copiaLista(lista, copia, TAMANHO_LISTA);
                     InsertionSort(copia, TAMANHO_LISTA);
                 }
                 fim = clock();
                 break;
             case 3:
                 inicio = clock();
-                for (int k = 0; k < 5; k++) { 
-                    int copia[TAMANHO_LISTA];
-                    for (int l = 0; l < TAMANHO_LISTA; l++) {
-                        copia[l] = lista[l];
-                    }
+                for (int k = 0; k < 5; k++) {
+                    copiaLista(lista, copia, TAMANHO_LISTA);
                     bubbleSort(copia, TAMANHO_LISTA);
                 }
                 fim = clock();
                 break;
             case 4:
                 inicio = clock();
-                for (int k = 0; k < 5; k++) { 
-                    int copia[TAMANHO_LISTA];
-                    for (int l = 0; l < TAMANHO_LISTA; l++) {
-                        copia[l] = lista[l];
-                    }
+                for (int k = 0; k < 5; k++) {
+                    copiaLista(lista, copia, TAMANHO_LISTA);
                     MergeSort(copia, 0, TAMANHO_LISTA - 1);
                 }
                 fim = clock();
                 break;
             case 5:
                 inicio = clock();
-                for (int k = 0; k < 5; k++) { 
-                    int copia[TAMANHO_LISTA];
-                    for (int l = 0; l < TAMANHO_LISTA; l++) {
-                        copia[l] = lista[l];
-                    }
+                for (int k = 0; k < 5; k++) {
+                    copiaLista(lista, copia, TAMANHO_LISTA);
                     QuickSort(copia, 0, TAMANHO_LISTA - 1);
                 }
                 fim = clock();
                 break;
             case 6:
                 inicio = clock();
-                for (int k = 0; k < 5; k++) { 
-                    int copia[TAMANHO_LISTA];
-                    for (int l = 0; l < TAMANHO_LISTA; l++) {
-                        copia[l] = lista[l];
-                    }
+                for (int k = 0; k < 5; k++) {
+                    copiaLista(lista, copia, TAMANHO_LISTA);
                     HeapSort(copia, TAMANHO_LISTA);
                 }
                 fim = clock();
@@ -287,18 +292,6 @@ int main() {
 
         tempo_cpu = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
         printf("Tempo de execução: %f segundos\n", tempo_cpu / 5); // Divide pelo número de repetições
-        int copia[TAMANHO_LISTA];
-        for (int l = 0; l < TAMANHO_LISTA; l++) {
-            copia[l] = lista[l];
-        }
-        switch (escolha) {
-            case 1: SelectionSort(copia, TAMANHO_LISTA); break;
-            case 2: InsertionSort(copia, TAMANHO_LISTA); break;
-            case 3: bubbleSort(copia, TAMANHO_LISTA); break;
-            case 4: MergeSort(copia, 0, TAMANHO_LISTA - 1); break;
-            case 5: QuickSort(copia, 0, TAMANHO_LISTA - 1); break;
-            case 6: HeapSort(copia, TAMANHO_LISTA); break;
-        }
 
     } while (escolha != 0);
 
