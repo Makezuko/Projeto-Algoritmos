@@ -1,0 +1,223 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define MAX_SIZE 100000
+
+void generate_random_array(int arr[], int size) {
+    for (int i = 0; i < size; i++) {
+        arr[i] = rand() % MAX_SIZE;
+    }
+}
+
+void copy_array(int source[], int dest[], int size) {
+    for (int i = 0; i < size; i++) {
+        dest[i] = source[i];
+    }
+}
+
+// Selection Sort
+void selection_sort(int arr[], int size) {
+    for (int i = 0; i < size - 1; i++) {
+        int min_idx = i;
+        for (int j = i + 1; j < size; j++) {
+            if (arr[j] < arr[min_idx]) {
+                min_idx = j;
+            }
+        }
+        int temp = arr[min_idx];
+        arr[min_idx] = arr[i];
+        arr[i] = temp;
+    }
+}
+
+// Insertion Sort
+void insertion_sort(int arr[], int size) {
+    for (int i = 1; i < size; i++) {
+        int key = arr[i];
+        int j = i - 1;
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+}
+
+// Bubble Sort
+void bubble_sort(int arr[], int size) {
+    for (int i = 0; i < size - 1; i++) {
+        for (int j = 0; j < size - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// Merge Sort
+void merge(int arr[], int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+    int L[n1], R[n2];
+
+    for (int i = 0; i < n1; i++) L[i] = arr[left + i];
+    for (int j = 0; j < n2; j++) R[j] = arr[mid + 1 + j];
+
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2) {
+        arr[k++] = (L[i] <= R[j]) ? L[i++] : R[j++];
+    }
+
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
+}
+
+void merge_sort(int arr[], int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+        merge_sort(arr, left, mid);
+        merge_sort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
+    }
+}
+
+// Quick Sort
+void quick_sort(int arr[], int low, int high) {
+    if (low < high) {
+        int pivot = arr[high], i = low - 1;
+        for (int j = low; j < high; j++) {
+            if (arr[j] < pivot) {
+                int temp = arr[++i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+        arr[high] = arr[i + 1];
+        arr[i + 1] = pivot;
+        quick_sort(arr, low, i);
+        quick_sort(arr, i + 2, high);
+    }
+}
+
+// Heap Sort
+void heapify(int arr[], int size, int i) {
+    int largest = i, left = 2 * i + 1, right = 2 * i + 2;
+
+    if (left < size && arr[left] > arr[largest]) largest = left;
+    if (right < size && arr[right] > arr[largest]) largest = right;
+
+    if (largest != i) {
+        int temp = arr[i];
+        arr[i] = arr[largest];
+        arr[largest] = temp;
+        heapify(arr, size, largest);
+    }
+}
+
+void heap_sort(int arr[], int size) {
+    for (int i = size / 2 - 1; i >= 0; i--) heapify(arr, size, i);
+    for (int i = size - 1; i > 0; i--) {
+        int temp = arr[0];
+        arr[0] = arr[i];
+        arr[i] = temp;
+        heapify(arr, i, 0);
+    }
+}
+
+// Wrappers para Merge Sort e Quick Sort
+void merge_sort_wrapper(int arr[], int size) {
+    merge_sort(arr, 0, size - 1);
+}
+
+void quick_sort_wrapper(int arr[], int size) {
+    quick_sort(arr, 0, size - 1);
+}
+
+// Função para medir o tempo de execução
+double measure_sort_time(void (*sort_func)(int[], int), int arr[], int size) {
+    int temp[size];
+    copy_array(arr, temp, size);
+
+    clock_t start = clock();
+    sort_func(temp, size);
+    clock_t end = clock();
+
+    return ((double)(end - start)) / CLOCKS_PER_SEC;
+}
+
+// Exibe o menu e retorna a escolha do usuário
+int display_menu() {
+    int choice;
+    printf("\nEscolha o algoritmo desejado:\n");
+    printf("1. Selection Sort\n");
+    printf("2. Insertion Sort\n");
+    printf("3. Bubble Sort\n");
+    printf("4. Merge Sort\n");
+    printf("5. Quick Sort\n");
+    printf("6. Heap Sort\n");
+    printf("0. Sair\n");
+    printf("Escolha uma opção: ");
+    scanf("%d", &choice);
+    return choice;
+}
+
+int main() {
+    srand(time(NULL));
+    int choice;
+
+    // Exibe o menu antes de solicitar o tamanho do array
+    choice = display_menu();
+
+    // Encerra o programa se o usuário escolher "Sair"
+    if (choice == 0) {
+        printf("Programa finalizado, obrigado por ultilizar.\n");
+        return 0;
+    }
+
+    int size;
+    printf("Digite o tamanho do array (1 a 100000): ");
+    scanf("%d", &size);
+    if (size < 1 || size > MAX_SIZE) {
+        printf("Tamanho inválido! Deve estar entre 1 e 100000.\n");
+        return 1;
+    }
+
+    int arr[size];
+    generate_random_array(arr, size);
+
+    double time_taken = 0.0;
+    switch (choice) {
+        case 1:
+            time_taken = measure_sort_time(selection_sort, arr, size);
+            printf("Selection Sort levou %.6f segundos\n", time_taken);
+            break;
+        case 2:
+            time_taken = measure_sort_time(insertion_sort, arr, size);
+            printf("Insertion Sort levou %.6f segundos\n", time_taken);
+            break;
+        case 3:
+            time_taken = measure_sort_time(bubble_sort, arr, size);
+            printf("Bubble Sort levou %.6f segundos\n", time_taken);
+            break;
+        case 4:
+            time_taken = measure_sort_time(merge_sort_wrapper, arr, size);
+            printf("Merge Sort levou %.6f segundos\n", time_taken);
+            break;
+        case 5:
+            time_taken = measure_sort_time(quick_sort_wrapper, arr, size);
+            printf("Quick Sort levou %.6f segundos\n", time_taken);
+            break;
+        case 6:
+            time_taken = measure_sort_time(heap_sort, arr, size);
+            printf("Heap Sort levou %.6f segundos\n", time_taken);
+            break;
+        default:
+            printf("Opção inválida!\n");
+    }
+
+    printf("Programa finalizado.\n");
+    return 0;
+}
