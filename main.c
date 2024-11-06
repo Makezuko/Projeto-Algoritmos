@@ -4,7 +4,7 @@
 
 #define TAMANHO_LISTA 10000 // Aumentando o tamanho da lista
 
-// Declarações das funções
+//Primeiro a gente define as funções
 void SelectionSort(int *lista, int tamanho);
 void InsertionSort(int *lista, int tamanho);
 void bubbleSort(int *lista, int tamanho);
@@ -15,7 +15,7 @@ void gerarLista(int *lista, int tamanho);
 void copiaLista(int *origem, int *destino, int tamanho);
 void imprimirLista(int *lista, int tamanho);
 
-// Função para copiar uma lista
+// Esta função vai garantir que a lista não tenha mudado entre os testes
 void copiaLista(int *origem, int *destino, int tamanho) {
     for (int i = 0; i < tamanho; i++) {
         destino[i] = origem[i];
@@ -190,7 +190,6 @@ void HeapSort(int *lista, int tamanho) {
     }
 }
 
-// Função para imprimir a lista
 void imprimirLista(int *lista, int tamanho) {
     for (int i = 0; i < tamanho; i++) {
         printf("%d ", lista[i]);
