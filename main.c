@@ -9,7 +9,7 @@ void SelectionSort(int *lista, int tamanho);
 void InsertionSort(int *lista, int tamanho);
 void bubbleSort(int *lista, int tamanho);
 void MergeSort(int *lista, int esquerda, int direita);
-void QuickSort(int *lista, int baixo, int alto); 
+void QuickSort(int *lista, int baixo, int alto);
 void HeapSort(int *lista, int tamanho);
 void gerarLista(int *lista, int tamanho);
 void copiaLista(int *origem, int *destino, int tamanho);
@@ -31,7 +31,6 @@ void gerarLista(int *lista, int tamanho) {
     // Embaralha a lista usando o algoritmo de Fisher-Yates
     for (int i = tamanho - 1; i > 0; i--) {
         int j = rand() % (i + 1);
-        // Troca lista[i] com a lista[j]
         int temp = lista[i];
         lista[i] = lista[j];
         lista[j] = temp;
@@ -88,7 +87,7 @@ void Merge(int *lista, int esquerda, int meio, int direita) {
     int *R = (int*)malloc(n2 * sizeof(int));
 
     if (L == NULL || R == NULL) {
-        fprintf(stderr, "Erro ao alocar memória.\n");
+        fprintf(stderr, "Erro ao alocar memória para Merge Sort.\n");
         exit(EXIT_FAILURE);
     }
 
@@ -151,8 +150,6 @@ int particao(int *lista, int baixo, int alto) {
     return (i + 1);
 }
 
-int particao(int *lista, int baixo, int alto);
-
 // Função de Quick Sort
 void QuickSort(int *lista, int baixo, int alto) {
     if (baixo < alto) {
@@ -178,7 +175,6 @@ void Heapify(int *lista, int n, int i) {
         int temp = lista[i];
         lista[i] = lista[maior];
         lista[maior] = temp;
-
         Heapify(lista, n, maior);
     }
 }
@@ -190,7 +186,6 @@ void HeapSort(int *lista, int tamanho) {
         int temp = lista[0];
         lista[0] = lista[i];
         lista[i] = temp;
-
         Heapify(lista, i, 0);
     }
 }
@@ -210,14 +205,11 @@ int main() {
 
     srand((unsigned)time(NULL));
 
-    // Gera uma lista de números aleatórios diferentes
     gerarLista(lista, TAMANHO_LISTA);
-
     printf("Alguns dos números gerados entre 0 e %d gerados aleatoriamente:\n", TAMANHO_LISTA);
-    imprimirLista(lista, 10); // Imprime os primeiros 10 números da lista original
+    imprimirLista(lista, 10);
 
     do {
-        // Exibe o menu de opções
         printf("\nEscolha uma opção de ordenação:\n");
         printf("1. Selection Sort\n");
         printf("2. Insertion Sort\n");
@@ -229,7 +221,6 @@ int main() {
         printf("Escolha uma opção (0-6): ");
         scanf("%d", &escolha);
 
-        // Chama a função de ordenação correspondente
         clock_t inicio, fim;
         double tempo_cpu;
 
@@ -286,12 +277,14 @@ int main() {
                 printf("Saindo...\n");
                 break;
             default:
-                printf("Opção inválida. Tente novamente.\n");
+                printf("Opção inválida.\n");
                 continue;
         }
 
-        tempo_cpu = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
-        printf("Tempo de execução: %f segundos\n", tempo_cpu / 5); // Divide pelo número de repetições
+        if (escolha >= 1 && escolha <= 6) {
+            tempo_cpu = ((double)(fim - inicio)) / (CLOCKS_PER_SEC * 5);
+            printf("Tempo médio de execução: %f segundos\n", tempo_cpu);
+        }
 
     } while (escolha != 0);
 
